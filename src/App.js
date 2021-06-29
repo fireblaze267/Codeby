@@ -23,10 +23,14 @@ function App() {
     
   }
 
+  function loading(){
+    
+  }
+
   return (
  <Flex height="auto" alignItems="center" mb="50" mt="50" justifyContent="center">
    <Flex height="90%" width="35vw" borderRadius="5"  alignItems="center" flexDirection="column" backgroundColor="white" color='black' padding="10px 5px">
-    <Heading p="5" borderBottom="1px" width="100%" textAlign='center' borderColor="gray.500">Meu Carrinho</Heading>
+    <Heading p="5" borderBottom="1px" width="100%" textAlign='center'  borderColor="gray.500">Meu Carrinho</Heading>
    
    <ul>
     {
