@@ -3,5 +3,5 @@ Processo seletivo Codeby, Desenvolvedor(a) Front-end Pleno.
 
 ##Start 
 
-  npm install
-  npm start
+ $ npm install
+ $ npm start
