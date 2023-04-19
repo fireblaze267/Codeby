@@ -1,56 +1,76 @@
-import React,{useEffect,useState} from "react";
-import {Flex,Heading,Button,Text, useBoolean} from "@chakra-ui/react"
-import Produtos from "./components/produtos";
-import {api2,api} from './api/api'
+import React, { useEffect, useState } from "react";
+import "./styles.scss";
+import { apiHandler } from "./api/api";
+import axios from "axios";
+import Produtos from "./components/Produtos";
+import Loading from "./components/loading";
 
 function App() {
-  const[Api,setApi] = useBoolean();
-  const [response,setResponse] = useState([]);
-  const[total,setTotal] = useState();
-  var toggle = null
-  { Api ? toggle=api2 : toggle=api}
+  const [api, setApi] = useState(0);
+  const [data, setData] = useState(null);
+  const [value, setValue] = useState(false);
 
-  useEffect(()=>{
+  useEffect(() => {
     getData();
-  },[toggle])
+  }, [api]);
 
-  async function getData(){
-    await toggle.get('').then(res => {
-      setTotal(res.data.totalizers[0].value)
-      setResponse(res.data.items)
-
-    })
-    
+  async function getData() {
+    data && setData(null);
+    axios.get(apiHandler(api)).then((response) => {
+      setData(response.data.record.items);
+      setValue(response.data.record.totalizers[0].value);
+    });
   }
 
   return (
- <Flex height="auto" alignItems="center" mb="50" mt="50" justifyContent="center">
-   <Flex height="90%" width="35vw" borderRadius="5"  alignItems="center" flexDirection="column" backgroundColor="white" color='black' padding="10px 5px">
-    <Heading p="5" borderBottom="1px" width="100%" textAlign='center'  borderColor="gray.500">Meu Carrinho</Heading>
-   
-   <ul>
-    {
-      response.map(data=>
-        <Produtos name={data.name} price={data.price} image={data.imageUrl}/>
+    <div className="main-div">
+      <div className="main-content">
+        <div className="main-header">
+          <h1>Carrinho</h1>
+          <button onClick={() => setApi(api === 0 ? 1 : 0)}>
+            Mudar exemplos
+          </button>
+        </div>
+        <div className="main-items">
+          {data ? (
+            <>
+              {data.map((res) => {
+                return (
+                  <Produtos
+                    name={res.name}
+                    price={res.price}
+                    image={res.imageUrl}
+                    detailUrl={res.detailUrl}
+                  />
+                );
+              })}
+              <label style={{ alignSelf: "flex-end", margin: 0, padding: 4 }}>
+                Itens : {data.length} | Total : R$ {value / 100}
+              </label>
+            </>
+          ) : (
+            <Loading />
+          )}
+        </div>
+      </div>
+
+      {data && (
+        <div className="main-checkout">
+          <div
+            className={value / 100 > 10 ? "main-notify-green" : "main-notify"}
+          >
+            {value / 100 > 10 ? (
+              <h3>Parabéns, sua compra tem frete grátis !</h3>
+            ) : (
+              <h3>
+                Por mais {10 - value / 100}, sua compra vai ter frete grátis
+              </h3>
+            )}
+          </div>
+          <button>Finalizar</button>
+        </div>
       )}
-   </ul>
-
-       <Flex borderTop="1px" borderBottom="1px" borderColor="gray.400" width="100%" padding="5" justifyContent="space-around">
-          <Text fontSize="xl">Total</Text>
-          <Text fontSize="xl">R$ {total / 100}</Text>
-        </Flex> 
-                  {
-                    total /100 > 10 &&
-                    <Text backgroundColor="green.100" borderRadius="10" padding="5" margin="5" color="green.400">Parabéns, sua compra tem frete grátis !</Text>
-                    
-                }
-        <Flex padding="2" width="100%">
-          <Button width="70%" height="4.5rem" margin="1" color="white" backgroundColor="blue.500" colorScheme="blue" >Finalizar</Button>
-          <Button width="30%" height="4.5rem" margin="1"  color="white" backgroundColor="blue.500"  colorScheme="blue" onClick={setApi.toggle} >Mudar exemplos</Button>
-        </Flex>
-
-   </Flex>
- </Flex>
+    </div>
   );
 }
 

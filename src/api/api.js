@@ -1,11 +1,10 @@
-import axios from 'axios'
+export function apiHandler(type) {
+  let api;
 
-const api = axios.create({
-    baseURL: "https://api.jsonbin.io/b/60db69819328b059d7b2c212"
-})
-
-const api2 = axios.create({
-    baseURL:"https://api.jsonbin.io/b/60db69ce55b7245a20d1a010"
-})
-
-export {api,api2};
+  if (type === 0) {
+    api = "https://api.jsonbin.io/v3/b/60db69819328b059d7b2c212";
+  } else if (type === 1) {
+    api = "https://api.jsonbin.io/v3/b/60db69ce55b7245a20d1a010";
+  } else return;
+  return api;
+}
